@@ -1,0 +1,101 @@
+<div>
+    <div style="width: 100%; height: 40px; background-color: yellow;padding-left: 20px; line-height: 40px;">
+        Create Employee
+    </div>
+    <div [formGroup]="editForm">
+        <div style="margin-left: 100px; margin-top: 50px;">
+            <div style="width: 100px; float: left; margin-left: 50px;">Name<span style="color: red;"> *</span>
+            </div>
+            <div style="width: 315px; float:left;">
+                <dx-text-box placeholder="Name" maxLength="100" formControlName="name">
+                </dx-text-box>
+                <div
+                    *ngIf="(!editForm.controls['name'].valid && (editForm.controls['name'].dirty || editForm.controls['name'].touched))||(!editForm.controls['name'].valid && submitAttempt)">
+                    <span style="color: red;">Name is required</span></div>
+            </div>
+        </div><br/>
+        <div style="margin-left: 100px; margin-top: 50px;">
+            <div  style="width:100px; float: left; margin-left: 50px;">Email<span style="color: red;"> *</span>
+            </div>
+            <div  style="width: 315px; float:left;">
+                <dx-text-box placeholder="Email" formControlName="email" maxLength="250" (onValueChanged)="emailIdValueChange($event)">
+                </dx-text-box>
+                <div
+                    *ngIf="((editForm.controls['email'].value =='' && (editForm.controls['email'].dirty || editForm.controls['email'].touched))||(editForm.controls['email'].value == '' && submitAttempt)) && !isEmailPatternValid">
+                    <span style="color: red;">Email Id is required</span></div>
+                <div *ngIf="isEmailIdValid">
+                    <span style="color: red;">Email Id already exist</span>
+                </div>
+                <div *ngIf="isEmailPatternValid && !isEmailIdValid">
+                    <span style="color: red;">Invalid Email Id</span>
+                </div>
+            </div>
+        </div><br/>
+        <div style="margin-left: 100px; margin-top: 50px;">
+            <div style="width: 100px; float: left; margin-left: 50px;">Mobile No<span style="color: red;"> *</span>
+            </div>
+            <div style="width: 315px; float:left;">
+                <dx-text-box placeholder="Mobile No" (onValueChanged)="verifyMobileNo($event)" maxLength="10" formControlName="mobile">
+                </dx-text-box>
+                <div
+                    *ngIf="(!editForm.controls['mobile'].valid && (editForm.controls['mobile'].dirty || editForm.controls['mobile'].touched))||(!editForm.controls['mobile'].valid && submitAttempt)">
+                    <span style="color: red;">Mobile No is required</span></div>
+                    <div *ngIf="mobileErrormsg != ''">
+                        <span style="color: red;">{{mobileErrormsg}}</span>
+                    </div>
+            </div>
+        </div><br/>
+        <div style="margin-left: 100px; margin-top: 50px;">
+            <div style="width: 100px; float: left; margin-left: 50px;">Designation<span style="color: red;"> *</span>
+            </div>
+            <div style="width: 315px; float:left;">
+                <dx-select-box
+                [items]="designationDatasource"
+                formControlName="designation"
+            ></dx-select-box>
+                <div
+                    *ngIf="(!editForm.controls['designation'].valid && (editForm.controls['designation'].dirty || editForm.controls['designation'].touched))||(!editForm.controls['designation'].valid && submitAttempt)">
+                    <span style="color: red;">Name is required</span></div>
+            </div>
+        </div><br/>
+        <div style="margin-left: 100px; margin-top: 50px;">
+            <div style="width: 100px; float: left; margin-left: 50px;">Gender<span style="color: red;"> *</span>
+            </div>
+            <div style="width: 315px; float:left;">
+                <input type="radio" formControlName="gender" value="male"><span style="padding-left: 10px;">Male</span> &nbsp; &nbsp;
+                <input type="radio" formControlName="gender" value="female"><span style="padding-left: 10px;">Female</span>
+            </div>
+        </div><br/>
+        <div style="margin-left: 100px; margin-top: 50px;">
+            <div style="width: 100px; float: left; margin-left: 50px;">Course<span style="color: red;"> *</span>
+            </div>
+            <div style="width: 315px; float:left;">
+                <input type="checkbox" formControlName="mca"><span style="padding-left: 10px;">MCA</span> &nbsp; &nbsp;
+                <input type="checkbox" formControlName="bca"><span style="padding-left: 10px;">BCA</span> &nbsp; &nbsp;
+                <input type="checkbox" formControlName="bsc"><span style="padding-left: 10px;">BSC</span> &nbsp; &nbsp;
+                <div
+                *ngIf="(!editForm.controls['mca'].value && !editForm.controls['bca'].value && !editForm.controls['bsc'].value && submitAttempt)">
+                <span style="color: red;">Atleast one course is required</span></div>
+            </div>
+        </div><br/>
+        <!--<div style="margin-left: 100px; margin-top: 50px;">
+            <div style="width: 100px; float: left; margin-left: 50px;">Img Upload<span style="color: red;"> *</span>
+            </div>
+            <div style="width: 315px; float:left;">
+                <input type="file" formControlName="file" />
+                <div
+                *ngIf="(editForm.controls['file'].value == '' && submitAttempt)">
+                <span style="color: red;">File is required</span></div>
+            </div>
+        </div><br/>-->
+        <div style="margin-left: 100px; margin-top: 50px;">
+            
+            <div style="width: 315px; float:left; margin-left: 50px;margin-left: 150px;">
+                <button (click)="createEmployee()">Submit</button>
+            </div>
+        </div><br/>
+    </div>
+</div>
+
+<div class="loader" *ngIf="showLoader">
+</div>

@@ -1,0 +1,11 @@
+Date/Time : 26-02-2021 06:45:26
+Exception : 
+Exception : The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.
+StackTrace :    at data.Repository.LoginRepository.checkUserCredential(LoginDetails loginDetails) in D:\Test\CS Tech\data\Repository\LoginRepository.cs:line 56
+   at CS_Tech.Controllers.LoginController.VerifyUser(LoginDetails loginDetails) in D:\Test\CS Tech\CS Tech\Controllers\LoginController.cs:line 32
+Date/Time : 26-02-2021 06:52:39
+Exception : 
+Exception : An exception was thrown while attempting to evaluate a LINQ query parameter expression. See the inner exception for more information. To show additional information call 'DbContextOptionsBuilder.EnableSensitiveDataLogging'.
+Object reference not set to an instance of an object.
+StackTrace :    at data.Repository.LoginRepository.checkUserCredential(LoginDetails loginDetails) in D:\Test\CS Tech\data\Repository\LoginRepository.cs:line 54
+   at CS_Tech.Controllers.LoginController.VerifyUser(LoginDetails loginDetails) in D:\Test\CS Tech\CS Tech\Controllers\LoginController.cs:line 32

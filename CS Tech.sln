@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS Tech", "CS Tech\CS Tech.csproj", "{81EBBDB6-1BBC-4E79-B539-A0250D2F2018}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "data", "data\data.csproj", "{DA1EB398-081B-4AE6-9E72-06E0B22ED874}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{81EBBDB6-1BBC-4E79-B539-A0250D2F2018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81EBBDB6-1BBC-4E79-B539-A0250D2F2018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81EBBDB6-1BBC-4E79-B539-A0250D2F2018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81EBBDB6-1BBC-4E79-B539-A0250D2F2018}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA1EB398-081B-4AE6-9E72-06E0B22ED874}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA1EB398-081B-4AE6-9E72-06E0B22ED874}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA1EB398-081B-4AE6-9E72-06E0B22ED874}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA1EB398-081B-4AE6-9E72-06E0B22ED874}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E3DF7DDA-12EF-4E01-BDAF-AD75CE7A63D7}
+	EndGlobalSection
+EndGlobal

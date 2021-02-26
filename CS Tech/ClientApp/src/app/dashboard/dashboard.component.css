@@ -1,0 +1,7 @@
+#container {
+    width: 400px; 
+    height: auto;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+}

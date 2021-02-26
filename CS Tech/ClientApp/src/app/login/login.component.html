@@ -1,0 +1,45 @@
+<div id="container">
+<div>
+    <div style="width: 100px; text-align: center;" >
+        <h1>Login</h1>
+    </div>
+</div>
+<div style="border: 1px solid gray; width:500px;padding:20px" >
+    <div [formGroup]="loginForm">
+
+        <div style="padding-left: 10px;">
+            <label>Email</label>
+            <div>
+                <input autocomplete="off" type="text" formControlName="email" />
+                <small
+                    *ngIf="(!loginForm.controls['email'].valid && (loginForm.controls['email'].dirty || loginForm.controls['email'].touched))||(!loginForm.controls['email'].valid && isSubmitted)">User
+                    ID is required</small>
+            </div>
+        </div>
+        <div style="padding-left: 10px;">
+            <label>Password</label>
+            <div>
+                <input id="text" name="password" type="password" autocomplete="off" formControlName="password" />
+                <small
+                    *ngIf="(!loginForm.controls['password'].valid && (loginForm.controls['password'].dirty || loginForm.controls['password'].touched))||(!loginForm.controls['password'].valid && isSubmitted)">Password
+                    is required</small>
+            </div>
+        </div>
+
+        <div style="padding-left: 10px;">
+            <span>{{errorMsg}}</span>
+        </div>
+
+        <div style="float:right ">
+            <button (click)="Login()">
+                Login
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="loader" *ngIf="showLoader">
+</div>
+</div>
