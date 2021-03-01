@@ -14,5 +14,6 @@ namespace data.Interface
         public string deleteEmployee(int employeeId);
         public Employee getEmployee(int employeeId);
         public bool verifyEmail(EmployeeEmailData employeeData);
+        public string SaveFileAttachment(FileAttachement fileAttachement);
     }
 }

@@ -14,6 +14,7 @@ namespace data.Context
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<FileAttachement> FileAttachements { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 import { EmployeeService } from '../employee.service';
 import notify from 'devextreme/ui/notify';
+import { UUID } from 'angular2-uuid';
+
 
 @Component({
   selector: 'app-employeeedit',
@@ -21,19 +23,33 @@ export class EmployeeeditComponent implements OnInit {
   mobileErrormsg: string = "";
   designationDatasource: any = ["HR", "Manager", "Sales"];
   showLoader: boolean = false;
+  refId: string = '';
+  editData: any;
+  formAttachment: string = '';
+  imageError: string = '';
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private service: EmployeeService, private _fb: FormBuilder) {
     this.buildForm();
   }
 
   ngOnInit() {
-
+    this.showLoader = true;
     this.editForm.controls['designation'].setValue("Sales");
     this.activatedRoute.params.subscribe(para => {
       this.key = para.id;
       if (para.id != 0) {
         this.service.getEmployee(this.key).subscribe(data => {
+          this.editData = data.result;
+          this.editForm.patchValue(data["result"]);
+          //this.editForm.controls['imageId'].setValue(data);
+          this.refId = UUID.UUID();
+          this.showLoader = false;
+        }, error => {
+          console.log(error);
         });
+      } else {
+        this.refId = UUID.UUID();
+        this.showLoader = false;
       }
 
     });
@@ -50,7 +66,8 @@ export class EmployeeeditComponent implements OnInit {
       mca: new FormControl(false),
       bca: new FormControl(false),
       bsc: new FormControl(false),
-      //file: new FormControl('', [Validators.required]),
+      imageId: new FormControl('', [Validators.required]),
+      status: new FormControl('Active', [Validators.required]),
       // name : new FormControl('', [Validators.required]),
       // name : new FormControl('', [Validators.required]),
     });
@@ -68,24 +85,52 @@ export class EmployeeeditComponent implements OnInit {
     }
   }
 
+  onFileAttached(e) {
+    this.showLoader = true;
+    var data = <Array<File>>e.files;
+    var size = data[0].size / 1000000;
+    if (data[0] && size < 5) {
+      this.service.uploadFiles(data[0], this.refId).subscribe(data => {
+        console.log("fileUpload", data);
+        if(data != "Invalid File Format"){
+          this.editForm.controls['imageId'].setValue(data);
+          this.imageError = "";
+        }else{
+          this.imageError = data;
+          this.showToaster(data , "error");
+        }
+        
+        this.showLoader = false;
+      }, error => {
+        this.showLoader = false;
+        console.log(error);
+      });
+    } else {
+      this.showLoader = false;
+      this.showToaster("File Size is too large to upload", "error");
+    }
+
+  }
+
   createEmployee() {
     this.showLoader = true;
     this.submitAttempt = true;
-    if (this.editForm.valid && (!this.isEmailPatternValid && !this.isEmailIdValid) && this.mobileErrormsg == "" && !(!this.editForm.controls['mca'].value && !this.editForm.controls['bca'].value && !this.editForm.controls['bsc'].value)) {
+    //this.editForm.controls['imageId'].setValue(this.refId);
+    this.verifyMobileNoOnFocusOut({event : {target : {value : this.editForm.controls['mobile'].value}}});
+    if (this.imageError != 'Invalid File Format' && this.editForm.valid && (!this.isEmailPatternValid && !this.isEmailIdValid) && this.mobileErrormsg == "" && !(!this.editForm.controls['mca'].value && !this.editForm.controls['bca'].value && !this.editForm.controls['bsc'].value)) {
 
       this.validateData = {
         'emailId': (this.editForm.controls['email'] && this.editForm.controls['email'].value != undefined && this.editForm.controls['email'].value == "") ? "" : this.editForm.controls['email'].value,
-        'employeeId': this.key != undefined  ? 0 : this.key
+        'employeeId': this.key != undefined ?  this.key : 0
       };
-
       this.service.verifyEmail(this.validateData).subscribe(validateData => {
         if (validateData) {
-          this.isEmailIdValid = validateData.isEmailIdExist;
+          this.isEmailIdValid = validateData.result;
 
-          if (!validateData.isEmailIdExist) {
+          if (!validateData.result) {
             if (this.editForm.valid) {
-              debugger;
               this.editForm.controls['id'].setValue(this.key);
+              //this.editForm.controls['imageId'].setValue(this.refId);
               this.service.addEmployee(this.editForm.value).subscribe(result => {
                 if (result.httpStatus == 200) {
 
@@ -94,16 +139,22 @@ export class EmployeeeditComponent implements OnInit {
                 }
                 else {
                   this.showToaster('error', result.message);
+                  this.showLoader = false;
                 }
               }, error => {
                 this.showToaster("error", error.message);
+                this.showLoader = false;
               });
             } else {
-              this.isEmailIdValid = validateData.isEmailIdExist;
+              this.isEmailIdValid = validateData.result;
               this.showLoader = false;
             }
 
+          }else{
+            this.showLoader = false;
           }
+        }else{
+          this.showLoader = false;
         }
       });
     } else {
@@ -112,16 +163,74 @@ export class EmployeeeditComponent implements OnInit {
 
   }
 
+  updateEmployee() {
+    this.showLoader = true;
+    this.submitAttempt = true;
+    //this.editForm.controls['imageId'].setValue(this.refId);
+    this.verifyMobileNoOnFocusOut({event : {target : {value : this.editForm.controls['mobile'].value}}});
+    if (this.imageError != 'Invalid File Format' && this.editForm.valid && (!this.isEmailPatternValid && !this.isEmailIdValid) && this.mobileErrormsg == "" && !(!this.editForm.controls['mca'].value && !this.editForm.controls['bca'].value && !this.editForm.controls['bsc'].value)) {
+
+      this.validateData = {
+        'emailId': (this.editForm.controls['email'] && this.editForm.controls['email'].value != undefined && this.editForm.controls['email'].value == "") ? "" : this.editForm.controls['email'].value,
+        'employeeId': this.key != undefined ?  this.key : 0
+      };
+      this.service.verifyEmail(this.validateData).subscribe(validateData => {
+        if (validateData) {
+          this.isEmailIdValid = validateData.result;
+
+          if (!validateData.result) {
+            if (this.editForm.valid) {
+              //this.editForm.controls['id'].setValue(this.key);
+              //this.editForm.controls['imageId'].setValue(this.refId);
+              this.service.updateEmployee(this.editForm.value).subscribe(result => {
+                if (result.httpStatus == 200) {
+
+                  this.showToaster('success', result.message);
+                  this.router.navigate(['/employees']);
+                }
+                else {
+                  this.showToaster('error', result.message);
+                  this.showLoader = false;
+                }
+              }, error => {
+                this.showToaster("error", error.message);
+                this.showLoader = false;
+              });
+            } else {
+              this.isEmailIdValid = validateData.result;
+              this.showLoader = false;
+            }
+
+          }else{
+            this.showLoader = false;
+          }
+        }else{
+          this.showLoader = false;
+        }
+      });
+    } else {
+      this.showLoader = false;
+    }
+
+  }
+
+  verifyMobileNoOnFocusOut(event){
+    if(event.event.target.value == ""){
+      this.mobileErrormsg = "Mobile No is required";
+    }
+  }
+
 
   verifyEmail() {
     this.validateData = {
       'emailId': (this.editForm.controls['email'] && this.editForm.controls['email'].value != undefined && this.editForm.controls['email'].value == "") ? "" : this.editForm.controls['email'].value,
-      'employeeId': this.key != undefined && this.key == 0 ? "" : this.key
+      'employeeId': this.key != undefined ? this.key : 0
     };
+
 
     this.service.verifyEmail(this.validateData).subscribe(validateData => {
       if (validateData) {
-        this.isEmailIdValid = validateData.isEmailIdExist == true ? validateData.isEmailIdExist : false;
+        this.isEmailIdValid = validateData.result;
       }
     });
   }

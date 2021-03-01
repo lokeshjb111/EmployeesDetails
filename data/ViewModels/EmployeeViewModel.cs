@@ -14,8 +14,8 @@ namespace data.ViewModels
         public string Gender { get; set; }
         public string Course { get; set; }
         public string ImageId { get; set; }
-        public string CreatedDate { get; set; }
-        public bool Status { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string Status { get; set; }
     }
 
     public class LoginDetails

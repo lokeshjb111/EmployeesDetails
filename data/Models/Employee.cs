@@ -21,10 +21,10 @@ namespace data.Models
         [MaxLength(10)]
         public string Mobile { get; set; }
         [Required]
-        [MaxLength(3)]
+        [MaxLength(10)]
         public string Designation { get; set; }
         [Required]
-        [MaxLength(1)]
+        [MaxLength(10)]
         public string Gender { get; set; }
         public bool Bca { get; set; }
         public bool Mca { get; set; }
@@ -32,9 +32,12 @@ namespace data.Models
         [Required]
         public string ImageId { get; set; }
         [Required]
-        public bool Status { get; set; }
+        [MaxLength(10)]
+        public string Status { get; set; }
         [Required]
-        public string CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        [Required]
+        public DateTime UpdatedDate { get; set; }
     }
 
     public class User
@@ -44,6 +47,17 @@ namespace data.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+    }
+
+    public class FileAttachement
+    {
+        [Key]
+        public Guid FileID { get; set; }
+        public Guid RefID { get; set; }
+        public string FileName { get; set; }
+        public string Extension { get; set; }
+        public string ContentType { get; set; }
+
     }
 
 

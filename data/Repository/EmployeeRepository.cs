@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using data.Helper;
 
 namespace data.Repository
 {
@@ -20,7 +21,10 @@ namespace data.Repository
         {
             try
             {
-                employee.CreatedDate = DateTime.Now.ToString();
+                employee.CreatedDate = DateTime.Now;
+                employee.UpdatedDate = DateTime.Now;
+                //employee.Status = "Active";
+                employee.ImageId = employee.ImageId;
                 _context.Employees.Add(employee);
                 _context.SaveChanges();
 
@@ -48,7 +52,8 @@ namespace data.Repository
                     employeeData.Bsc = employee.Bsc;
                     employeeData.Mca = employee.Mca;
                     employeeData.ImageId = employee.ImageId;
-                    _context.Employees.Update(employee);
+                    employee.UpdatedDate = DateTime.Now;
+                    _context.Employees.Update(employeeData);
                     _context.SaveChanges();
                 }
                 else
@@ -98,7 +103,6 @@ namespace data.Repository
                 throw ex;
             }
         }
-
         public bool verifyEmail(EmployeeEmailData employeeData)
         {
             try
@@ -143,7 +147,10 @@ namespace data.Repository
         {
             try
             {
-                return _context.Employees.Select(u => new EmployeeSummary
+                 List<Employee> employees =  _context.Employees.ToList();
+
+
+                List<EmployeeSummary> employeeSummary = employees.Select(u => new EmployeeSummary
                 {
                     Id = u.Id,
                     Name = u.Name,
@@ -154,8 +161,40 @@ namespace data.Repository
                     ImageId = u.ImageId,
                     CreatedDate = u.CreatedDate,
                     Status = u.Status
-                }).OrderByDescending(us => us.CreatedDate).ToList();
+                }).OrderBy(us => us.Id).ToList();
 
+                for (var count = 0; count < employees.Count; count++)
+                {
+                    List<string> ar = new List<string>();
+                    if (employees[count].Bca)
+                    {
+                        ar.Add("BCA");
+                    }
+                    if (employees[count].Mca)
+                    {
+                        ar.Add("MCA");
+                    }
+                    if (employees[count].Bsc)
+                    {
+                        ar.Add("BSC");
+                    }
+
+                    employeeSummary[count].Course = string.Join(",", ar); 
+                }
+                return employeeSummary;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public string SaveFileAttachment(FileAttachement fileAttachement)
+        {
+            try
+            {
+                _context.FileAttachements.Add(fileAttachement);
+                _context.SaveChanges();
+                return fileAttachement.FileID.ToString()+fileAttachement.Extension.ToString();
             }
             catch (Exception ex)
             {

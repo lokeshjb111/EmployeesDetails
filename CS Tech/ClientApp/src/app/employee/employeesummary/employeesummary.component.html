@@ -2,4 +2,75 @@
     <div>
         <button (click)="gotoCreateEmployee()">Create Employee</button>
     </div>
+
+
+    <dx-data-grid [dataSource]="employeeDatasource" 
+                                style="height: calc(100vh - 155px);" [rowAlternationEnabled]="true"
+                                [wordWrapEnabled]="true" [showBorders]="true" >
+
+                                <dxo-paging [pageSize]="2"></dxo-paging>
+
+
+                                <dxi-column cellTemplate="edit" caption="Action" width="60">
+                                    <div class="grid-icons" *dxTemplate="let item of 'edit'">
+                                        <a (click)="editClick(item.data)"  routerLink ="employee/{{item.data.id}}" ><i style="cursor: pointer;" title="Edit"
+                                            >Edit </i></a>
+                                    </div>
+                                </dxi-column>
+                                
+                                
+                                <dxi-column dataField="id" [width]="'100'" caption="Unique Id">
+                                </dxi-column>
+                                <dxi-column cellTemplate="image" caption="Image" width="130">
+                                    <div *dxTemplate="let item of 'image'">
+                                        <img src="https://localhost:44337/images/employees/{{item.data.imageId}}" width="100px" height="100px"  />
+                                    </div>
+                                </dxi-column>
+                                <dxi-column dataField="name" [width]="'150'" caption="Name">
+                                </dxi-column>
+                                <dxi-column dataField="email" [width]="'250'" caption="Email">
+                                </dxi-column>
+                                <dxi-column dataField="mobile" [width]="'150'" caption="Mobile">
+                                </dxi-column>
+                                <dxi-column dataField="designation" [width]="'150'" caption="Designation">
+                                </dxi-column>
+                                <dxi-column dataField="gender" [width]="'100'" caption="Gender">
+                                </dxi-column>
+                                <dxi-column dataField="status" [width]="'100'" caption="Status">
+                                </dxi-column>
+                                <dxi-column dataField="course" caption="Course" width="150">
+                                </dxi-column>
+                                <dxi-column dataField="createdDate" [width]="'150'" caption="Created Date" dataType="datetime" format="dd/MM/yyyy">
+                                </dxi-column>
+                                <dxi-column cellTemplate="delete" caption="Delete" width="60">
+                                    <div class="grid-icons" *dxTemplate="let item of 'delete'">
+                                        <a (click)="deleteClick(item.data)"  ><i style="cursor: pointer;" title="Delete"
+                                            >Delete</i></a>
+                                    </div>
+                                </dxi-column>
+                                <!-- <dxi-column dataField="activityStartDate" [width]="'100'" caption="Start Date" dataType="date" [format]="'dd/MM/yyyy'" ></dxi-column>
+                                <dxi-column dataField="activityEndDate"  [width]="'100'" caption="End Date" dataType="date" [format]="'dd/MM/yyyy'" ></dxi-column>
+                                <dxi-column dataField="submittedBy" [width]="'100'" caption="Submitted By">
+                                </dxi-column>
+                                <dxi-column dataField="submittedDate" [width]="'120'" dataType="date" [format]="'dd/MM/yyyy'"
+                                    caption="Submitted Date">
+                                </dxi-column> -->
+                        </dx-data-grid>
+
+                        <div class="loader" *ngIf="showLoader">
+                        </div>
 </div>
+
+<dx-popup [(visible)]="showDeletePopup" [width]="380" [height]="160" [showTitle]="true"
+    title="Confirmation" [dragEnabled]="false" [closeOnOutsideClick]="false" [showCloseButton]="false">
+    <div class="pop-cont">
+        <div class="form-group">
+            <label>Are you sure you want to delete?</label>
+        </div>
+        <div class="comment-popup-btn popup-btn">
+            <button class="btn btn-primary active" (click)="deleteEmployee()">Ok</button>
+            <button class="btn btn-default cancel" (click)="closeDeletePopup()">Cancel</button>
+        </div>
+    </div>
+</dx-popup>
+

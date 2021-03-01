@@ -2,7 +2,7 @@
     <div style="width: 100%; height: 40px; background-color: yellow;padding-left: 20px; line-height: 40px;">
         Create Employee
     </div>
-    <div [formGroup]="editForm">
+    <div style="width: 600px; float:left;" [formGroup]="editForm">
         <div style="margin-left: 100px; margin-top: 50px;">
             <div style="width: 100px; float: left; margin-left: 50px;">Name<span style="color: red;"> *</span>
             </div>
@@ -35,11 +35,12 @@
             <div style="width: 100px; float: left; margin-left: 50px;">Mobile No<span style="color: red;"> *</span>
             </div>
             <div style="width: 315px; float:left;">
-                <dx-text-box placeholder="Mobile No" (onValueChanged)="verifyMobileNo($event)" maxLength="10" formControlName="mobile">
+                <dx-text-box placeholder="Mobile No" (onValueChanged)="verifyMobileNo($event)" maxLength="10"
+                (onFocusOut)="verifyMobileNoOnFocusOut($event)"  formControlName="mobile">
                 </dx-text-box>
-                <div
+                <!-- <div
                     *ngIf="(!editForm.controls['mobile'].valid && (editForm.controls['mobile'].dirty || editForm.controls['mobile'].touched))||(!editForm.controls['mobile'].valid && submitAttempt)">
-                    <span style="color: red;">Mobile No is required</span></div>
+                    <span style="color: red;">Mobile No is required</span></div> -->
                     <div *ngIf="mobileErrormsg != ''">
                         <span style="color: red;">{{mobileErrormsg}}</span>
                     </div>
@@ -78,22 +79,49 @@
                 <span style="color: red;">Atleast one course is required</span></div>
             </div>
         </div><br/>
-        <!--<div style="margin-left: 100px; margin-top: 50px;">
-            <div style="width: 100px; float: left; margin-left: 50px;">Img Upload<span style="color: red;"> *</span>
+        <div style="margin-left: 100px; margin-top: 50px;">
+            <div style="width: 100px; float: left; margin-left: 50px;">Status<span style="color: red;"> *</span>
             </div>
             <div style="width: 315px; float:left;">
-                <input type="file" formControlName="file" />
-                <div
-                *ngIf="(editForm.controls['file'].value == '' && submitAttempt)">
-                <span style="color: red;">File is required</span></div>
+                <dx-select-box
+                [items]="['Active', 'InActive']"
+                formControlName="status"
+            ></dx-select-box>
             </div>
-        </div><br/>-->
+        </div><br/>
         <div style="margin-left: 100px; margin-top: 50px;">
+            <div style="width: 100px; float: left; margin-left: 50px;">Img Upload(png / jpg)<span style="color: red;"> *</span>
+            </div>
+            <div style="width: 315px; float:left;">
+                <input type="file" #files (change)="onFileAttached(files)" accept="image/x-png,image/jpeg" />
+                <div
+                *ngIf="(imageError != 'Invalid File Format' ) && ( (!editForm.controls['imageId'].valid && (editForm.controls['imageId'].dirty || editForm.controls['imageId'].touched))||(!editForm.controls['imageId'].valid && submitAttempt))">
+                <span style="color: red;">File is required</span></div>
+                <div
+                *ngIf="(imageError == 'Invalid File Format' )">
+                <span style="color: red;">Invalid File Format</span></div>
+            </div>
+        </div><br/>
+
+
+
+
+        <div *ngIf="key==0" style="margin-left: 100px; margin-top: 50px;">
             
             <div style="width: 315px; float:left; margin-left: 50px;margin-left: 150px;">
                 <button (click)="createEmployee()">Submit</button>
             </div>
+        </div>
+
+        <div *ngIf="key!=0" style="margin-left: 100px; margin-top: 50px;">
+            
+            <div style="width: 315px; float:left; margin-left: 50px;margin-left: 150px;">
+                <button (click)="updateEmployee()">Update</button>
+            </div>
         </div><br/>
+    </div>
+    <div style="width:200px; float: right; margin-top: 50px;" *ngIf="editForm.controls['imageId'].value!=''">
+        <img src="https://localhost:44337/images/employees/{{editForm.controls['imageId'].value}}" width="100px" height="100px"  />
     </div>
 </div>
 

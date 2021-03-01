@@ -1,9 +1,15 @@
-﻿using data.Interface;
+﻿using data.Context;
+using data.Helper;
+using data.Interface;
 using data.Models;
 using data.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,12 +18,19 @@ namespace CS_Tech.Controllers
     public class EmployeeController : Controller
     {
         private IEmployeeRepository _repository;
-        public EmployeeController(IEmployeeRepository repository)
+        private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _env;
+        private readonly DataContext _context;
+        public EmployeeController(IEmployeeRepository repository, IConfiguration config, IWebHostEnvironment env, DataContext context)
         {
             _repository = repository;
+            _config = config;
+            _env = env;
+            _context = context;
         }
 
-        [HttpGet, Route("employee/getEmployees")]
+        [Authorize]
+        [HttpGet, Route("employeeCon/getEmployees")]
         public IActionResult getEmployees()
         {
             try
@@ -41,7 +54,8 @@ namespace CS_Tech.Controllers
             }
         }
 
-        [HttpPost, Route("employee/addEmployee")]
+        [Authorize]
+        [HttpPost, Route("employeeCon/addEmployee")]
         public IActionResult addEmployee([FromBody] Employee employee)
         {
             try
@@ -65,7 +79,8 @@ namespace CS_Tech.Controllers
             }
         }
 
-        [HttpPost, Route("employee/updateEmployee")]
+        [Authorize]
+        [HttpPost, Route("employeeCon/updateEmployee")]
         public IActionResult updateEmployee([FromBody] Employee employee)
         {
             try
@@ -89,7 +104,8 @@ namespace CS_Tech.Controllers
             }
         }
 
-        [HttpGet, Route("employee/deleteEmployee")]
+        [Authorize]
+        [HttpGet, Route("employeeCon/deleteEmployee/{employeeId}")]
         public IActionResult deleteEmployee(int employeeId)
         {
             try
@@ -113,7 +129,8 @@ namespace CS_Tech.Controllers
             }
         }
 
-        [HttpGet, Route("employee/getEmployee")]
+        [Authorize]
+        [HttpGet, Route("employeeCon/getEmployee/{employeeId}")]
         public IActionResult getEmployee(int employeeId)
         {
             try
@@ -150,7 +167,7 @@ namespace CS_Tech.Controllers
             }
         }
 
-        [HttpPost, Route("employee/verifyEmail")]
+        [HttpPost, Route("employeeCon/verifyEmail")]
         public IActionResult verifyEmail([FromBody] EmployeeEmailData employeeData)
         {
             try
@@ -173,5 +190,75 @@ namespace CS_Tech.Controllers
                 });
             }
         }
+
+        [Authorize]
+        [RequestSizeLimit(5000000)]
+        [HttpPost, Route("employeeCon/UploadDoc/{key}")]
+        public string UploadFile(string key)
+        {
+            string keyUploaded = string.Empty;
+            try
+            {
+
+                //var path = _env.ContentRootPath + "\\wwwroot\\Employees";
+                var path = Directory.GetCurrentDirectory() + "/Images/Employees";
+
+
+                FileAttachement fileAttachement = new FileAttachement();
+                var request = Request.Form.Files[0];
+                string[] extension = request.FileName.Split(".");
+                fileAttachement.Extension = "." + extension[extension.Length - 1];
+
+                if (extension[extension.Length - 1].ToString().ToLower() == "png" || extension[extension.Length - 1].ToString().ToLower() == "jpeg"
+                    || extension[extension.Length - 1].ToString().ToLower() == "jpg")
+                {
+                    fileAttachement.FileID = Guid.NewGuid();
+
+                    var status = SaveFileStream(path, path + "\\" + fileAttachement.FileID + "." + extension[extension.Length - 1], request.OpenReadStream());
+
+
+
+                    fileAttachement.RefID = Guid.Parse(key);
+                    fileAttachement.FileName = request.FileName;
+                    fileAttachement.ContentType = request.ContentType;
+                    keyUploaded = _repository.SaveFileAttachment(fileAttachement);
+                }
+                else
+                {
+
+                    return "Invalid File Format";
+                }
+
+
+                
+
+            }
+            catch (Exception ex)
+            {
+                Utility.LogException(ex, _env.ContentRootPath);
+            }
+            return keyUploaded;
+        }
+
+        private bool SaveFileStream(string rootFolderPath, string fileFullpath, Stream stream)
+        {
+            try
+            {
+                if (!System.IO.Directory.Exists(rootFolderPath))
+                {
+                    System.IO.Directory.CreateDirectory(rootFolderPath);
+                }
+                var fileStream = new FileStream(fileFullpath, FileMode.Create, FileAccess.Write);
+                stream.CopyTo(fileStream);
+                fileStream.Dispose();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
     }
 }

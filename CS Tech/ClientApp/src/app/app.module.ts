@@ -13,7 +13,7 @@ import { EmployeeeditComponent } from './employee/employeeedit/employeeedit.comp
 import { EmployeeService } from './employee/employee.service';
 import { AuthComponent } from './layout/auth/auth.component';
 import { ModuleComponent } from './layout/module/module.component';
-import { DxNumberBoxModule, DxSelectBoxModule, DxTextBoxModule } from 'devextreme-angular';
+import { DxDataGridModule, DxNumberBoxModule, DxPopupModule, DxSelectBoxModule, DxTextBoxModule } from 'devextreme-angular';
 import { LoginService } from './login/login.service';
 import { AuthGuard } from './auth-guard';
 import { AppInterceptor } from './app-interceptor';
@@ -33,6 +33,8 @@ import { AppInterceptor } from './app-interceptor';
     DxTextBoxModule,
     DxNumberBoxModule,
     DxSelectBoxModule,
+    DxDataGridModule,
+    DxPopupModule,
     RouterModule.forRoot([
       { path: '', redirectTo: '/login', pathMatch: 'full' },
       {
